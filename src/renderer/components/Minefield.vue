@@ -3,136 +3,52 @@
     <p class="helptext">{{ bombCount - flagCount }} remaining</p>
 
     <div class="minefield">
-      <div class="minefield-column" v-for="column in field">
+      <div class="minefield-column" v-for="column in grid">
         <mine
           v-for="mine in column"
           :mine.sync="mine"
           :key="mine.id"
-          @click="clickMine(mine)"
+          @click="revealMine(mine)"
           @flag="flagMine(mine)"
         />
       </div>
     </div>
 
     <game-over-overlay />
+    <game-win-overlay />
   </section>
 </template>
 
 <script>
-  import _ from 'lodash'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import GameOverOverlay from './GameOverOverlay'
+  import GameWinOverlay from './GameWinOverlay'
   import Mine from './Mine'
 
   export default {
     name: 'minefield',
     components: {
       GameOverOverlay,
+      GameWinOverlay,
       Mine
     },
-    data () {
-      const size = 8
-      const bombCount = 10
-      const field = new Array(size)
-
-      let points = new Array(size * size)
-
-      for (let i = 0; i < size; i++) {
-        field[i] = new Array(size)
-
-        for (let j = 0; j < size; j++) {
-          field[i][j] = {
-            id: i * size + j,
-            isMine: false,
-            isFound: false,
-            isFlagged: false,
-            nearby: 0,
-            x: i,
-            y: j
-          }
-
-          points[i * size + j] = {
-            x: i,
-            y: j
-          }
-        }
-      }
-
-      _.forEach(_.take(_.shuffle(points), bombCount), point => {
-        field[point.x][point.y].isMine = true
-      })
-
-      this.updateNearby()
-
-      return {
-        bombCount,
-        flagCount: 0,
-        field,
-        size
-      }
+    computed: {
+      ...mapGetters([
+        'bombCount',
+        'flagCount',
+        'grid'
+      ])
     },
     methods: {
       ...mapActions([
-        'gameOver'
-      ]),
-      clickMine (mine) {
-        if (mine.isFound) {
-          return
-        }
-
-        mine.isFound = true
-        this.updateNearby()
-
-        if (mine.isMine) {
-          this.gameOver()
-        }
-
-        if (mine.nearby === 0) {
-          for (let i = mine.x - 1; i <= mine.x + 1; i++) {
-            for (let j = mine.y - 1; j <= mine.y + 1; j++) {
-              this.floodFill(i, j)
-            }
-          }
-        }
-      },
-      flagMine (mine) {
-        if (mine.isFound) {
-          return
-        }
-
-        this.flagCount += mine.isFlagged ? -1 : 1
-
-        mine.isFlagged = !mine.isFlagged
-      },
-      floodFill (x, y) {
-        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
-          return
-        }
-
-        this.clickMine(this.field[x][y])
-      },
-      countNearby (x, y) {
-        let count = 0
-
-        for (let xx = Math.max(x - 1, 0); xx <= Math.min(x + 1, this.size - 1); xx++) {
-          for (let yy = Math.max(y - 1, 0); yy <= Math.min(y + 1, this.size - 1); yy++) {
-            if (xx === x && yy === y) {
-              continue
-            }
-
-            count += (this.field[xx][yy] && this.field[xx][yy].isMine) ? 1 : 0
-          }
-        }
-
-        return count
-      },
-      updateNearby () {
-        for (let x = 0; x < this.size; x++) {
-          for (let y = 0; y < this.size; y++) {
-            this.field[x][y].nearby = this.countNearby(x, y)
-          }
-        }
-      }
+        'flagMine',
+        'gameOver',
+        'resetGrid',
+        'revealMine'
+      ])
+    },
+    mounted () {
+      this.resetGrid()
     }
   }
 </script>
@@ -180,7 +96,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* height: 100vh; */
   }
 
   .mine {
@@ -194,6 +109,7 @@
     vertical-align: middle;
     cursor: pointer;
     transition: background 0.25s ease-in-out;
+    box-shadow: 0.0.25rem 0.25rem rgba(12, 15, 18, 0.34);
   }
 
   .mine:hover {

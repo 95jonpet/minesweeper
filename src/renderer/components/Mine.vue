@@ -27,10 +27,10 @@
       classes () {
         let classes = [ 'mine' ]
 
-        if (this.mine.isFound) {
+        if (this.mine.isRevealed) {
           classes.push('found')
 
-          if (this.mine.isMine) {
+          if (this.mine.type === 'MINE') {
             classes.push('detonated')
           }
         } else {
@@ -42,7 +42,7 @@
         return classes
       },
       icon () {
-        if (this.mine.isFound && this.mine.isMine) {
+        if (this.mine.isRevealed && this.mine.type === 'MINE') {
           return faBomb
         } else if (this.mine.isFlagged) {
           return faFlag
@@ -51,11 +51,11 @@
         return null
       },
       text () {
-        if (!this.mine.isFound) {
+        if (!this.mine.isRevealed) {
           return ''
         }
 
-        if (this.mine.isMine) {
+        if (this.mine.type === 'MINE') {
           return ''
         } else if (this.mine.isFlagged) {
           return ''
