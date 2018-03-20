@@ -1,8 +1,8 @@
 <template>
   <section class="container">
-    <p class="helptext">{{ bombCount - flagCount }} remaining</p>
+    <p class="helptext">{{ text }}</p>
 
-    <div class="minefield">
+    <div class="minefield" :data-size="size">
       <div class="minefield-column" v-for="column in grid">
         <mine
           v-for="mine in column"
@@ -36,8 +36,25 @@
       ...mapGetters([
         'bombCount',
         'flagCount',
-        'grid'
-      ])
+        'grid',
+        'gridSize'
+      ]),
+      size () {
+        if (this.gridSize > 12) {
+          return 'huge'
+        } else if (this.gridSize > 8) {
+          return 'large'
+        }
+
+        return 'normal'
+      },
+      text () {
+        if (this.flagCount > this.bombCount) {
+          return `${(this.flagCount - this.bombCount)} flags too many`
+        }
+
+        return `${(this.bombCount - this.flagCount)} mines remaining`
+      }
     },
     methods: {
       ...mapActions([
@@ -56,6 +73,13 @@
 <style>
   @import url('https://fonts.googleapis.com/css?family=Overpass+Mono');
   @import url('https://fonts.googleapis.com/css?family=Lato');
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    cursor: default;
+  }
 
   body {
     background: #1e272e;
@@ -85,7 +109,7 @@
   .minefield {
     display: flex;
     flex-direction: row;
-    font: 'Overpass Mono', monospace;
+    font-family: 'Overpass Mono', monospace;
     align-items: center;
     justify-content: center;
     color: #d2dae2;
@@ -110,6 +134,22 @@
     cursor: pointer;
     transition: background 0.25s ease-in-out;
     box-shadow: 0.0.25rem 0.25rem rgba(12, 15, 18, 0.34);
+  }
+
+  .minefield[data-size="large"] .mine {
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    font-size: 1rem;
+    margin: 0.125rem;
+  }
+
+  .minefield[data-size="huge"] .mine {
+    width: 1.5rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    margin: 0.0625rem;
   }
 
   .mine:hover {

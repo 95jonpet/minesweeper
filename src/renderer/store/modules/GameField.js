@@ -10,7 +10,8 @@ const state = {
 const getters = {
   bombCount: state => state.bombCount,
   flagCount: state => state.flagCount,
-  grid: state => state.grid
+  grid: state => state.grid,
+  gridSize: state => state.gridSize
 }
 
 const mutations = {

@@ -4,7 +4,12 @@
     @click.left="click"
     @click.right="flag"
   >
-    {{ text }}
+    <span
+      class="mine-indicator"
+      :data-content="text"
+    >
+      {{ text }}
+    </span>
     <font-awesome-icon
       v-if="icon !== null"
       :icon="icon"
@@ -80,3 +85,41 @@
     }
   }
 </script>
+
+<style scoped>
+  .mine-indicator {
+    color: #d2dae2; /* white */
+  }
+
+  .mine-indicator[data-content="1"] {
+    color: #3c40c6; /* blue */
+  }
+
+  .mine-indicator[data-content="2"] {
+    color: #05c46b; /* green */
+  }
+
+  .mine-indicator[data-content="3"] {
+    color: #ff3f34; /* red */
+  }
+
+  .mine-indicator[data-content="4"] {
+    color: #9e407d; /* purple */
+  }
+
+  .mine-indicator[data-content="5"] {
+    color: #000000; /* black */
+  }
+
+  .mine-indicator[data-content="6"] {
+    color: #b64746; /* maroon */
+  }
+
+  .mine-indicator[data-content="7"] {
+    color: #d2dae2; /* gray */
+  }
+
+  .mine-indicator[data-content="8"] {
+    color: #34e7e4; /* turquoise */
+  }
+</style>
