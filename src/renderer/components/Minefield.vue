@@ -14,6 +14,8 @@
       </div>
     </div>
 
+    <p class="timetext">{{ elapsedTime }}</p>
+
     <game-over-overlay />
     <game-win-overlay />
   </section>
@@ -32,12 +34,18 @@
       GameWinOverlay,
       Mine
     },
+    data () {
+      return {
+        elapsedTime: '0 seconds played'
+      }
+    },
     computed: {
       ...mapGetters([
         'bombCount',
         'flagCount',
         'grid',
-        'gridSize'
+        'gridSize',
+        'gameStartTime'
       ]),
       size () {
         if (this.gridSize > 12) {
@@ -60,12 +68,19 @@
       ...mapActions([
         'flagMine',
         'gameOver',
-        'resetGrid',
+        'restartGame',
         'revealMine'
       ])
     },
     mounted () {
-      this.resetGrid()
+      this.restartGame()
+
+      setInterval(() => {
+        const date = new Date()
+        const elapsed = Math.floor((date - this.gameStartTime) / 1000) // Seconds
+
+        this.elapsedTime = `${elapsed} second${elapsed === 1 ? '' : 's'} played`
+      }, 1000)
     }
   }
 </script>
@@ -104,6 +119,16 @@
     margin: 0;
     padding: 0;
     padding-bottom: 1rem;
+  }
+
+  .timetext {
+    font-family: 'Lato', sans-serif;
+    color: #d2dae2;
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+    padding-top: 0.75rem;
   }
 
   .minefield {

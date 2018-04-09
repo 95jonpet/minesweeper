@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 const state = {
-  bombCount: 10,
+  bombCount: 40,
   flagCount: 0,
   grid: [],
   gridSize: 16

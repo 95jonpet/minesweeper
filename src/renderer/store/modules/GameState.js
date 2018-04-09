@@ -1,15 +1,18 @@
 const state = {
-  gameState: 'PLAYING'
+  gameState: 'PLAYING',
+  gameStartTime: new Date()
 }
 
 const getters = {
   isGameOver: state => state.gameState === 'GAME_OVER',
-  isGameWin: state => state.gameState === 'WIN'
+  isGameWin: state => state.gameState === 'WIN',
+  gameStartTime: state => state.gameStartTime
 }
 
 const mutations = {
   RESTART_GAME (state) {
     state.gameState = 'PLAYING'
+    state.gameStartTime = new Date()
     this.commit('RESET_GRID')
   },
   SET_GAME_OVER_STATE (state) {
