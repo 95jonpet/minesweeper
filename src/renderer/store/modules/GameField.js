@@ -4,7 +4,7 @@ const state = {
   bombCount: 10,
   flagCount: 0,
   grid: [],
-  gridSize: 8
+  gridSize: 16
 }
 
 const getters = {
@@ -23,6 +23,11 @@ const mutations = {
         for (let j = Math.max(mine.y - 1, 0); j <= Math.min(mine.y + 1, state.gridSize - 1); j++) {
           if (state.grid[i][j].isRevealed || state.grid[i][j].type !== 'EMPTY') {
             continue
+          }
+
+          if (state.grid[i][j].isFlagged) {
+            state.grid[i][j].isFlagged = false
+            state.flagCount--
           }
 
           this.commit('FLOOD_FILL', state.grid[i][j])
