@@ -35,6 +35,12 @@ const mutations = {
       }
     }
   },
+  SET_GRID_SIZE (state, size) {
+    state.gridSize = size
+  },
+  SET_BOMB_COUNT (state, count) {
+    state.bombCount = count
+  },
   RESET_GRID (state) {
     let grid = new Array(state.gridSize)
     let points = new Array(state.gridSize * state.gridSize)
@@ -129,6 +135,12 @@ const actions = {
     }
 
     commit('UPDATE_GAME_STATE_IF_WON')
+  },
+  setGridSize ({ commit }, gridSize) {
+    commit('SET_GRID_SIZE', gridSize)
+  },
+  setBombCount ({ commit }, bombCount) {
+    commit('SET_BOMB_COUNT', bombCount)
   }
 }
 
